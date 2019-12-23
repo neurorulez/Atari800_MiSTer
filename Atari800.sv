@@ -63,6 +63,8 @@ module emu
 	// b[1]: user button
 	// b[0]: osd button
 	output  [1:0] BUTTONS,
+	
+	input   [5:0] JOYAV,
 
 	output [15:0] AUDIO_L,
 	output [15:0] AUDIO_R,
@@ -148,6 +150,7 @@ localparam CONF_STR = {
 	"S2,CARROMBIN,Load Cart;",
 	"-;",
 	"OL,Swap Joysticks,No,Yes;",
+	"OM,DB9 Joystick,No,Yes;",
 	"-;",
 	"O79,CPU Speed,1x,2x,4x,8x,16x;",
 	"OAC,Drive Speed,Standard,Fast-6,Fast-5,Fast-4,Fast-3,Fast-2,Fast-1,Fast-0;",
@@ -344,7 +347,7 @@ atari800top atari800top
 	.JOY2X(status[21] ? ax : joya_1[7:0] ),
 	.JOY2Y(status[21] ? ay : joya_1[15:8]),
 
-	.JOY1(status[21] ? joy_1[8:0] : j0),
+	.JOY1(status[22] ? {4'b0000,~JOYAV[4:0]} : status[21] ? joy_1[8:0] : j0), //Cuando tenga el Splitter con swich {~JOYAV[6:5],2'b00,~JOYAV[4:0]} //Poner la entrada de [6:0] y quitar la asignacion del pin 6 a 1 en el sys_top.
 	.JOY2(status[21] ? j0 : joy_1[8:0])
 );
 

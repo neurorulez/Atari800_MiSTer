@@ -96,10 +96,10 @@ module sys_top
 `endif
 
 	////////// I/O ALT /////////
-	output        SD_SPI_CS,
-	input         SD_SPI_MISO,
-	output        SD_SPI_CLK,
-	output        SD_SPI_MOSI,
+	//output        SD_SPI_CS,
+	//input         SD_SPI_MISO,
+	//output        SD_SPI_CLK,
+	//output        SD_SPI_MOSI,
 
 	inout         SDCD_SPDIF,
 	output        IO_SCL,
@@ -121,10 +121,11 @@ module sys_top
 	output  [7:0] LED,
 
 	///////// USER IO ///////////
-	inout   [6:0] USER_IO
+	inout   [7:0] USER_IO
 );
 
-//////////////////////  Secondary SD  ///////////////////////////////////
+//////////////////////  Secondary SD  /////////////////////////////////// NO SE USA
+wire SD_SPI_CS, SD_SPI_MISO, SD_SPI_CLK, SD_SPI_MOSI;
 
 wire sd_miso;
 wire SD_CS, SD_CLK, SD_MOSI, SD_MISO;
@@ -1048,6 +1049,7 @@ alsa alsa
 
 ////////////////  User I/O (USB 3.0 connector) /////////////////////////
 
+/*
 assign USER_IO[0] =                       !user_out[0]  ? 1'b0 : 1'bZ;
 assign USER_IO[1] =                       !user_out[1]  ? 1'b0 : 1'bZ;
 assign USER_IO[2] = !(SW[1] ? HDMI_I2S   : user_out[2]) ? 1'b0 : 1'bZ;
@@ -1063,7 +1065,7 @@ assign user_in[3] =         USER_IO[3];
 assign user_in[4] = SW[1] | USER_IO[4];
 assign user_in[5] = SW[1] | USER_IO[5];
 assign user_in[6] =         USER_IO[6];
-
+*/
 
 ///////////////////  User module connection ////////////////////////////
 
@@ -1105,6 +1107,9 @@ wire        osd_status;
 
 wire  [6:0] user_out, user_in;
 
+assign USER_IO[7] = 1'b0; //La señal de JOY Swich. asi solo lee 1 mando.
+assign USER_IO[6] = 1'b1; //Para que funcione el mando de mega en modo atari 2 botones- (Quitarlo cuando pongamos el splitter con el Swich para POTs)
+
 emu emu
 (
 	.CLK_50M(FPGA_CLK2_50),
@@ -1127,7 +1132,9 @@ emu emu
 	.LED_POWER(led_power),
 	.LED_DISK(led_disk),
 	.BUTTONS(btn),
-
+	
+	.JOYAV(USER_IO[5:0]),
+	
 	.VIDEO_ARX(ARX),
 	.VIDEO_ARY(ARY),
 
