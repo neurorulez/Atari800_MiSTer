@@ -64,6 +64,8 @@ module emu
 	// b[0]: osd button
 	output  [1:0] BUTTONS,
 
+	input   [5:0] JOYAV,
+	
 	output [15:0] AUDIO_L,
 	output [15:0] AUDIO_R,
 	output        AUDIO_S, // 1 - signed audio samples, 0 - unsigned
@@ -147,6 +149,7 @@ localparam CONF_STR = {
 	"-;",
 	"O79,CPU Speed,1x,2x,4x,8x,16x;",
 	"-;",
+	"OL,DB9 Joystick,No,Yes;",
 	"O6,Aspect ratio,4:3,16:9;",
 	"OHJ,Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%,CRT 75%;",
 	"O34,Stereo mix,None,25%,50%,100%;",
@@ -305,7 +308,7 @@ atari5200top atari5200top
 	.JOY2X(joya_1[7:0]),
 	.JOY2Y(joya_1[15:8]),
 
-	.JOY1(j0    & {17'b11111111111111111, {4{joy_d1ena}}}),
+	.JOY1(status[21] ? {16'h0000,~JOYAV[4:0]} & {17'b11111111111111111, {4{joy_d1ena}}} : j0    & {17'b11111111111111111, {4{joy_d1ena}}}),
 	.JOY2(joy_1 & {17'b11111111111111111, {4{joy_d2ena}}})
 );
 
